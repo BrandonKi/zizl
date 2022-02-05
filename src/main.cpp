@@ -1,15 +1,17 @@
-#include "Common.h"
+#include "common.h"
+
+#include "interp.h"
 
 Args parse_cmd_args(int argc, char* argv[]) {
     Args args;
 
-    std::vector<std::string_view> arg_list(argv, argv + argc);
+    std::vector<std::string_view> arg_list(argv + 1, argv + argc);
     for(auto arg: arg_list) {
         if(arg == "-") {
             // support cmd line options in the future
         }
         else {
-            arg_list.file.push_back(arg);
+            args.files.push_back(arg);
         }
     }
 

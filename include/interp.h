@@ -5,7 +5,7 @@
 
 class Interp {
   public:
-    Interp(Args args): args{args} {}
+    Interp(Args);
 
     int run();
 
