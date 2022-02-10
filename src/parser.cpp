@@ -29,6 +29,7 @@ void Parser::parse_top_level() {
 void Parser::parse_function() {
     parse_function_header();
     parse_expression();
+    ir_builder.pretty_print_buffer();
 }
 
 void Parser::parse_function_header() {
@@ -76,8 +77,63 @@ std::vector<Type> Parser::parse_type_pack() {
 }
 
 void Parser::parse_expression() {
-    while(!lexer.expect_token(TokenKind::ret)) {
+    using enum TokenKind;
+    while(true) {
+        switch(lexer.current_token().kind) {
+            case int_literal:
+                ir_builder.build_push(10);    // TODO convert to int
+                break;
+            case float_literal:
+            case string_literal:
+            case id:
+                assert(false);
 
+            case add:
+                ir_builder.build_add();
+                break;
+            case sub:
+                ir_builder.build_sub();
+                break;
+            case mul:
+                ir_builder.build_mul();
+                break;
+            case div:
+                ir_builder.build_div();
+                break;
+            case mod:
+                ir_builder.build_mod();
+                break;
+            case less_than:
+            case greater_than:
+                assert(false);
+                break;
+
+            case dup:
+                ir_builder.build_dup();
+                break;
+            case pop:
+                ir_builder.build_pop();
+                break;
+            case swap:
+                ir_builder.build_swap();
+                break;
+
+            //colon,
+            //double_colon,
+            //left_paren,
+            //right_paren,
+            //arrow,
+            //comma,
+
+            case ret:
+                ir_builder.build_ret();
+                return;
+            case end_of_file:
+                break;
+            default:
+                assert(false);
+        }
+        lexer.next_token();
     }
 }
 

@@ -153,7 +153,7 @@ Token Lexer::lex_id() {
 
     while(is_alpha_numeric(*(index++))) {}
 
-    Span span{span_start, index};
+    Span span{span_start, index - 1};
 
     if(TokenKind kind = get_keyword(span); kind != TokenKind::none)
         return Token{span, kind};
@@ -167,7 +167,7 @@ Token Lexer::lex_number() {
 
     while(is_number(*(index++))) {}
 
-    return Token{Span{span_start, index}, TokenKind::int_literal};
+    return Token{Span{span_start, index - 1}, TokenKind::int_literal};
 }
 
 Token Lexer::lex_colon() {

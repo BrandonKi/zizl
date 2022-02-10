@@ -78,13 +78,15 @@ void Ir::pretty_print_buffer() {
                 std::cout << "mod\n";
                 break;
 
-            case ir_push:
+            case ir_push: {
                 std::cout << "push\t";
-                u64 imm;
+                u64 imm = 0;
                 for(int x = 0; x < 8; ++x)
-                    imm &= bytecode_buffer[i + x] << (x * 8);
+                    imm |= bytecode_buffer[i + x + 1] << (x * 8);
                 std::cout << imm << "\n";
+                i += 8;
                 break;
+            }
             case ir_pop:
                 std::cout << "pop\n";
                 break;
