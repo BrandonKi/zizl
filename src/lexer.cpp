@@ -1,17 +1,13 @@
 #include "lexer.h"
 
-Lexer::Lexer(std::string_view filedata): filedata{filedata}, index{0}, last_token{} {
+Lexer::Lexer(std::string filedata): filedata{filedata}, index{this->filedata.data()}, last_token{lex_token()} {
 
 }
 
 Token Lexer::lex_token() {
 
-    while(true) {
-
-        if(index == filedata.size())
-            return Token{Span{index, index}, TokenKind::end_of_file};
-
-        switch(filedata[index]) {
+    while(index < filedata.data() + filedata.size()) {
+        switch(*index) {
             case '\n':
             case ' ':
                 ++index;
@@ -40,7 +36,7 @@ Token Lexer::lex_token() {
             case '+':
                 return Token{Span{index, index++}, TokenKind::add};
             case ',':
-                assert(false);
+                return Token{Span{index, index++}, TokenKind::comma};
             case '-':
                 return lex_dash();
             case '.':
@@ -149,30 +145,30 @@ Token Lexer::lex_token() {
                 assert(false);
         }
     }
-    return {};
+    return Token{Span{index, index}, TokenKind::end_of_file};
 }
 
 Token Lexer::lex_id() {
-    i64 span_start = index;
+    char* span_start = index;
 
-    while(is_alpha_numeric(filedata[index++])) {}
+    while(is_alpha_numeric(*(index++))) {}
 
-    return Token{Span{span_start, index}, TokenKind::identifier};
+    return Token{Span{span_start, index}, TokenKind::id};
 }
 
 // TODO should handle floats too
 Token Lexer::lex_number() {
-    i64 span_start = index;
+    char* span_start = index;
 
-    while(is_number(filedata[index++])) {}
+    while(is_number(*(index++))) {}
 
     return Token{Span{span_start, index}, TokenKind::int_literal};
 }
 
 Token Lexer::lex_colon() {
-    i64 span_start = index;
+    char* span_start = index;
 
-    if(filedata[index + 1] == ':') {
+    if(*(index + 1) == ':') {
         index += 2;
         return Token{Span{span_start, index}, TokenKind::double_colon};
     }
@@ -181,9 +177,9 @@ Token Lexer::lex_colon() {
 }
 
 Token Lexer::lex_dash() {
-    i64 span_start = index;
+    char* span_start = index;
 
-    if(filedata[index + 1] == '>') {
+    if(*(index + 1) == '>') {
         index += 2;
         return Token{Span{span_start, index}, TokenKind::arrow};
     }
@@ -192,11 +188,11 @@ Token Lexer::lex_dash() {
 }
 
 void Lexer::consume_comment() {
-    while(filedata[index++] != '\n') {}
+    while(*(index++) != '\n') {}
 }
 
 Token Lexer::peek_token() {
-    i64 start_index = index;
+    char* start_index = index;
     auto token = lex_token();
     index = start_index;
     return token;
@@ -211,7 +207,26 @@ Token Lexer::current_token() {
     return last_token;
 }
 
-Token Lexer::check_token(Token) {
+bool Lexer::check_token(TokenKind kind) {
+    if(kind == current_token().kind) {
+        return true;
+    }
+    return false;
+}
+
+bool Lexer::expect_token(TokenKind kind) {
+    if(check_token(kind)) {
+        next_token();
+        return true;
+    }
+    return false;
+}
+
+
+bool Lexer::verify_token(TokenKind kind) {
+    if(check_token(kind)) {
+        next_token();
+        return true;
+    }
     assert(false);
-    return {};
 }

@@ -4,16 +4,25 @@
 #include "common.h"
 
 #include "lexer.h"
+#include "ir.h"
 
 class Parser {
   public:
-    Parser();
+    Parser(std::string_view);
 
-    /*std::vector<>*/ void parse(std::string_view);
+    std::vector<u8> parse();
 
   private:
+    Lexer lexer;
+    Ir ir_builder;
 
+    void parse_top_level();
+    void parse_function();
+    void parse_function_header();
+    std::vector<Type> parse_type_pack();
+    void parse_expression();
 
+    Type id_to_type(Span);
 };
 
 #endif // ZIZL_PARSER_H

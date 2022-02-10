@@ -4,18 +4,20 @@
 
 class Lexer {
   public:
-    Lexer(std::string_view);
+    Lexer(std::string);
 
     Token lex_token();
 
     Token peek_token();
     Token next_token();
     Token current_token();
-    Token check_token(Token);
+    bool check_token(TokenKind);
+    bool expect_token(TokenKind);
+    bool verify_token(TokenKind);
 
   private:
-    std::string_view filedata;
-    i64 index;
+    std::string filedata;
+    char* index;
     Token last_token;
 
     Token lex_id();

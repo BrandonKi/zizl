@@ -11,6 +11,7 @@ class Interp {
 
   private:
     Args args;
+    std::vector<u8> bytecode;
 
     void parse_all_files();
 

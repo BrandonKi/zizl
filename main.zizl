@@ -19,9 +19,37 @@ main :: () -> int
     ret
 
 ##
-## return 0 if false and 1 otherwise
+## return 0 if true and 1 otherwise
 ##
 
-pick :: (bool) -> int
-    if 0 else 1 then ret
+pick :: bool -> int
+    if 1 else 0 then ret
 
+##
+## top-level variable declaration
+##
+
+arg1 :: 1
+arg2 :: 1 2 +
+
+main :: () -> int
+    arg1 arg2 add
+
+##
+## let statement
+##
+
+main :: () -> int
+    let x = 6 4 * in
+        x x +
+
+##
+## partially specialized functions
+##
+
+fib :: int -> int
+    dup 1 - fib
+    swap 2 - fib
+    +
+fib :: 0 -> 1
+fib :: 1 -> 1

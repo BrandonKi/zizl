@@ -1,6 +1,8 @@
 #ifndef ZIZL_COMMON_H
 #define ZIZL_COMMON_H
 
+#include "span.h"
+
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -32,7 +34,7 @@ enum class TokenKind {
     int_literal,
     float_literal,
     string_literal,
-    identifier,
+    id,
 
     add,
     sub,
@@ -51,19 +53,18 @@ enum class TokenKind {
     left_paren,
     right_paren,
     arrow,
+    comma,
 
     end_of_file,
 };
 
-struct Span {
-    i64 start;
-    i64 end;
+enum Type {
+    zizl_int,
 };
 
 struct Token {
     Span span;
     TokenKind kind;
-    std::string_view data;
 };
 
 [[nodiscard]] inline std::string read_file(std::string_view filepath) {
@@ -93,7 +94,7 @@ inline std::string_view tokenkind_to_string(TokenKind kind) {
             return "float_literal"sv;
         case string_literal:
             return "string_literal"sv;
-        case identifier:
+        case id:
             return "identifier"sv;
 
         case add:
