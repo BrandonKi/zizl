@@ -12,6 +12,7 @@
 #include <utility>
 #include <memory>
 #include <string_view>
+#include <unordered_map>
 #include <cstdint>
 #include <cassert>
 
@@ -31,6 +32,7 @@ struct Args {
 };
 
 enum class TokenKind {
+    none,
     int_literal,
     float_literal,
     string_literal,
@@ -55,6 +57,8 @@ enum class TokenKind {
     arrow,
     comma,
 
+    ret,
+
     end_of_file,
 };
 
@@ -66,6 +70,18 @@ struct Token {
     Span span;
     TokenKind kind;
 };
+
+inline std::unordered_map<std::string_view, TokenKind> keywords = {
+    {"ret"sv, TokenKind::ret},
+};
+
+inline TokenKind get_keyword(Span span) {
+    std::string_view str = static_cast<std::string_view>(span);
+    auto search = keywords.find(str);
+    if (search == keywords.end())
+        return TokenKind::none;
+    return search->second;
+}
 
 [[nodiscard]] inline std::string read_file(std::string_view filepath) {
     std::ifstream file;

@@ -153,7 +153,12 @@ Token Lexer::lex_id() {
 
     while(is_alpha_numeric(*(index++))) {}
 
-    return Token{Span{span_start, index}, TokenKind::id};
+    Span span{span_start, index};
+
+    if(TokenKind kind = get_keyword(span); kind != TokenKind::none)
+        return Token{span, kind};
+
+    return Token{span, TokenKind::id};
 }
 
 // TODO should handle floats too

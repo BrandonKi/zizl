@@ -76,7 +76,9 @@ std::vector<Type> Parser::parse_type_pack() {
 }
 
 void Parser::parse_expression() {
+    while(!lexer.expect_token(TokenKind::ret)) {
 
+    }
 }
 
 

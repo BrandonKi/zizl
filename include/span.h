@@ -1,6 +1,8 @@
 #ifndef ZIZL_SPAN_H
 #define ZIZL_SPAN_H
 
+#include <string_view>
+
 class Span {
   public:
     char* start;
@@ -10,6 +12,9 @@ class Span {
         return start[index];
     }
 
+    operator std::string_view() const {
+        return std::string_view(start, end - start);
+    }
 };
 
 inline bool operator ==(Span span1, Span span2) {
