@@ -4,7 +4,7 @@ Parser::Parser(std::string_view filename): lexer{read_file(filename)}, ir_builde
 
 }
 
-std::vector<u8> Parser::parse() {
+bytecode_module Parser::parse() {
     parse_top_level();
 /*
     Token tkn{};
@@ -14,11 +14,11 @@ std::vector<u8> Parser::parse() {
     }
 */
 
-    return ir_builder.get_bytecode_buffer();
+    return ir_builder.get_bytecode();
 }
 
 void Parser::parse_top_level() {
-    if(lexer.check_token(TokenKind::id))
+    while(lexer.check_token(TokenKind::id))
         parse_function();
 }
 
@@ -92,9 +92,11 @@ void Parser::parse_expression() {
             }
             case float_literal:
             case string_literal:
-            case id:
                 assert(false);
-
+            case id:
+                // TODO uuuhhh...
+                ir_builder.build_fn_call(std::string(span));
+                break;
             case add:
                 ir_builder.build_add();
                 break;
@@ -134,6 +136,7 @@ void Parser::parse_expression() {
 
             case ret:
                 ir_builder.build_ret();
+                lexer.next_token();
                 return;
             case end_of_file:
                 break;

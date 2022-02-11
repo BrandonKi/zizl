@@ -2,6 +2,7 @@
 #define ZIZL_INTERP_H
 
 #include "common.h"
+#include "ir.h"
 
 class Interp {
   public:
@@ -11,7 +12,7 @@ class Interp {
 
   private:
     Args args;
-    std::vector<u8> bytecode;
+    bytecode_module bytecode;
 
     void parse_all_files();
 

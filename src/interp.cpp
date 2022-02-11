@@ -17,8 +17,8 @@ void Interp::parse_all_files() {
 
 int Interp::run() {
     std::vector<u64> stack;
-    for(int i = 0; i < bytecode.size(); ++i) {
-        switch(bytecode[i]) {
+    for(int i = bytecode.entrypoint; i < bytecode.buffer.size(); ++i) {
+        switch(bytecode.buffer[i]) {
             case ir_add: {
                 auto arg2 = stack.back();
                 stack.pop_back();
@@ -40,7 +40,7 @@ int Interp::run() {
             case ir_push: {
                 u64 imm = 0;
                 for(int x = 0; x < 8; ++x)
-                    imm |= bytecode[i + x + 1] << (x * 8);
+                    imm |= bytecode.buffer[i + x + 1] << (x * 8);
                 i += 8;
                 stack.push_back(imm);
                 break;
@@ -49,8 +49,14 @@ int Interp::run() {
             case ir_dup:
             case ir_swap:
                 assert(false);
-            case ir_call:
-                assert(false);
+            case ir_call: {
+                u64 imm = 0;
+                for(int x = 0; x < 8; ++x)
+                    imm |= bytecode.buffer[i + x + 1] << (x * 8);
+                i += 8;
+                i = imm;
+                break;
+            }
             case ir_ret:
                 return stack.back();
             default:

@@ -1,5 +1,5 @@
 #ifndef ZIZL_IR_H
-#define ZIZ_IR_H
+#define ZIZL_IR_H
 #include "common.h"
 
 enum ir_instruction: u8 {
@@ -28,9 +28,14 @@ struct ir_function {
     u64 buffer_location;
 };
 
+struct bytecode_module {
+    std::vector<u8> buffer;
+    u64 entrypoint;
+};
+
 class Ir {
   public:
-    Ir(): function_table{}, bytecode_buffer{} {}
+    Ir(): function_table{}, bytecode{} {}
 
     void build_fn_def(std::string, std::vector<Type>, std::vector<Type>);
 
@@ -48,13 +53,13 @@ class Ir {
     void build_fn_call(std::string);
     void build_ret();
 
-    std::vector<u8> get_bytecode_buffer();
+    bytecode_module get_bytecode();
     void pretty_print_buffer();
     void push_imm(u64);
 
   private:
     std::vector<ir_function> function_table;
-    std::vector<u8> bytecode_buffer;
+    bytecode_module bytecode;
 
 };
 

@@ -10,7 +10,7 @@ class Parser {
   public:
     Parser(std::string_view);
 
-    std::vector<u8> parse();
+    bytecode_module parse();
 
   private:
     Lexer lexer;
