@@ -1,0 +1,10 @@
+##
+## return 3
+##
+
+add :: (int, int) -> int
+    + ret
+
+main :: () -> int
+    1 2 add
+    ret
