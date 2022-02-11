@@ -79,10 +79,17 @@ std::vector<Type> Parser::parse_type_pack() {
 void Parser::parse_expression() {
     using enum TokenKind;
     while(true) {
-        switch(lexer.current_token().kind) {
-            case int_literal:
-                ir_builder.build_push(10);    // TODO convert to int
+        auto token = lexer.current_token();
+        auto span = token.span;
+        switch(token.kind) {
+            case int_literal: { // TODO signed literals
+                u64 result;
+                auto [ptr, ec] {std::from_chars(span.start, span.end, result)};
+                if (ec != std::errc())
+                    assert(false);
+                ir_builder.build_push(result);
                 break;
+            }
             case float_literal:
             case string_literal:
             case id:

@@ -12,6 +12,7 @@
 #include <utility>
 #include <memory>
 #include <string_view>
+#include <charconv>
 #include <unordered_map>
 #include <cstdint>
 #include <cassert>
