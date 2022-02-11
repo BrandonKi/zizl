@@ -13,7 +13,7 @@ class Span {
     }
 
     operator std::string_view() const {
-        return std::string_view(start, end - start);
+        return std::string_view(start, end - start + 1);
     }
 };
 

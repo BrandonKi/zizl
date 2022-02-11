@@ -58,6 +58,7 @@ enum class TokenKind {
     arrow,
     comma,
 
+    call,
     ret,
 
     end_of_file,
@@ -146,6 +147,12 @@ inline std::string_view tokenkind_to_string(TokenKind kind) {
             return "right_paren"sv;
         case arrow:
             return "arrow"sv;
+        case comma:
+            return "comma"sv;
+        case call:
+            return "call"sv;
+        case ret:
+            return "ret"sv;
         case end_of_file:
             return "end_of_file"sv;
         default:

@@ -48,7 +48,9 @@ int Interp::run() {
             case ir_pop:
             case ir_dup:
             case ir_swap:
-
+                assert(false);
+            case ir_call:
+                assert(false);
             case ir_ret:
                 return stack.back();
             default:

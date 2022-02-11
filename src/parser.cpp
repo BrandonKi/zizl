@@ -33,14 +33,14 @@ void Parser::parse_function() {
 }
 
 void Parser::parse_function_header() {
-    Token id = lexer.current_token();
+    // TODO speed
+    std::string id = std::string(lexer.current_token().span);
     lexer.next_token();
     lexer.verify_token(TokenKind::double_colon);
     auto itypes = parse_type_pack();
     lexer.verify_token(TokenKind::arrow);
     auto otypes = parse_type_pack();
-    // TODO pass id, itypes, and otypes
-    ir_builder.start_function();
+    ir_builder.build_fn_def(id, std::move(itypes), std::move(otypes));
 }
 
 // ()

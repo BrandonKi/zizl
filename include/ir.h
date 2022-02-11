@@ -17,6 +17,7 @@ enum ir_instruction: u8 {
     ir_if,      //
     ir_else,    // need to figure out how these will work
     ir_then,    // lowering control flow to raw jumps seems easiest
+    ir_call,
     ir_ret,
 };
 
@@ -31,7 +32,7 @@ class Ir {
   public:
     Ir(): function_table{}, bytecode_buffer{} {}
 
-    void start_function();
+    void build_fn_def(std::string, std::vector<Type>, std::vector<Type>);
 
     void build_add();
     void build_sub();
@@ -44,15 +45,15 @@ class Ir {
     void build_dup();
     void build_swap();
 
+    void build_fn_call(std::string);
     void build_ret();
 
     std::vector<u8> get_bytecode_buffer();
     void pretty_print_buffer();
+    void push_imm(u64);
 
   private:
-    // TODO use this instead
-    // std::vector<ir_function> function_table;
-    std::vector<u64> function_table;
+    std::vector<ir_function> function_table;
     std::vector<u8> bytecode_buffer;
 
 };

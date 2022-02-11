@@ -2,8 +2,9 @@
 
 using enum ir_instruction;
 
-void Ir::start_function() {
-    function_table.push_back(bytecode_buffer.size());
+void Ir::build_fn_def(std::string id, std::vector<Type> itypes, std::vector<Type> otypes) {
+    ir_function fn{id, itypes, otypes, bytecode_buffer.size()};
+    function_table.push_back(fn);
 }
 
 void Ir::build_add() {
@@ -28,15 +29,7 @@ void Ir::build_mod() {
 
 void Ir::build_push(u64 imm) {
     bytecode_buffer.push_back(ir_push);
-
-    bytecode_buffer.push_back((imm & 0x00000000000000ff) >> 0);
-    bytecode_buffer.push_back((imm & 0x000000000000ff00) >> 8);
-    bytecode_buffer.push_back((imm & 0x0000000000ff0000) >> 16);
-    bytecode_buffer.push_back((imm & 0x00000000ff000000) >> 24);
-    bytecode_buffer.push_back((imm & 0x000000ff00000000) >> 32);
-    bytecode_buffer.push_back((imm & 0x0000ff0000000000) >> 40);
-    bytecode_buffer.push_back((imm & 0x00ff000000000000) >> 48);
-    bytecode_buffer.push_back((imm & 0xff00000000000000) >> 56);
+    push_imm(imm);
 }
 
 void Ir::build_pop() {
@@ -49,6 +42,26 @@ void Ir::build_dup() {
 
 void Ir::build_swap() {
     bytecode_buffer.push_back(ir_swap);
+}
+
+void Ir::build_fn_call(std::string id) {
+    // TODO possibly match functions depending on function args
+    // although it would be pretty hard because of the nature of the language
+    // it should probably be done in sema not here
+
+    // TODO optimize (hash table maybe??)
+
+    // find id in function_table
+    u64 index = 0;
+    for(auto& fn: function_table) {
+        if(fn.id == id) {
+            // emit a call with index from function_table
+            bytecode_buffer.push_back(ir_call);
+            push_imm(fn.buffer_location);
+            return;
+        }
+    }
+    assert(false);    // could not find function
 }
 
 void Ir::build_ret() {
@@ -104,3 +117,13 @@ void Ir::pretty_print_buffer() {
     }
 }
 
+void Ir::push_imm(u64 imm) {
+    bytecode_buffer.push_back((imm & 0x00000000000000ff) >> 0);
+    bytecode_buffer.push_back((imm & 0x000000000000ff00) >> 8);
+    bytecode_buffer.push_back((imm & 0x0000000000ff0000) >> 16);
+    bytecode_buffer.push_back((imm & 0x00000000ff000000) >> 24);
+    bytecode_buffer.push_back((imm & 0x000000ff00000000) >> 32);
+    bytecode_buffer.push_back((imm & 0x0000ff0000000000) >> 40);
+    bytecode_buffer.push_back((imm & 0x00ff000000000000) >> 48);
+    bytecode_buffer.push_back((imm & 0xff00000000000000) >> 56);
+}
