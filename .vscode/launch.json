@@ -6,7 +6,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["C:/Users/Kirin/OneDrive/Desktop/zizl/tests/test2.zizl"],
+            "args": ["C:/Users/Kirin/OneDrive/Desktop/zizl/tests/test3.zizl"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
