@@ -1,0 +1,12 @@
+##
+## return 8
+##
+
+add :: (int, int) -> int
+    + ret
+
+main :: () -> int
+    1 2 add
+    3 2 add
+    add
+    ret
