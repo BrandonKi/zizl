@@ -14,6 +14,7 @@
 #include <string_view>
 #include <charconv>
 #include <unordered_map>
+#include <algorithm>
 #include <cstdint>
 #include <cassert>
 
@@ -75,6 +76,9 @@ struct Token {
 
 inline std::unordered_map<std::string_view, TokenKind> keywords = {
     {"ret"sv, TokenKind::ret},
+    {"dup"sv, TokenKind::dup},
+    {"pop"sv, TokenKind::pop},
+    {"swap"sv, TokenKind::swap},
 };
 
 inline TokenKind get_keyword(Span span) {

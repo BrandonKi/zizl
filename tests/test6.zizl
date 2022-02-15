@@ -1,0 +1,7 @@
+##
+## return 10
+##
+
+main :: () -> int
+    10 99 pop
+    ret

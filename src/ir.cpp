@@ -113,7 +113,7 @@ void Ir::pretty_print_buffer() {
                 std::cout << "swap\n";
                 break;
             case ir_call: {
-                std::cout << "call\n";
+                std::cout << "call\t";
                 u64 imm = 0;
                 for(int x = 0; x < 8; ++x)
                     imm |= bytecode.buffer[i + x + 1] << (x * 8);

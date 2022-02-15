@@ -2,6 +2,14 @@
 
 #include "parser.h"
 
+// TODO support signed versions of these
+#define BIN_OP(op)    do {                             \
+                          auto arg2 = stack.back();    \
+                          stack.pop_back();            \
+                          auto arg1 = stack.back();    \
+                          stack.back() = arg1 op arg2; \
+                      } while(0)
+
 Interp::Interp(Args args): args{args}, bytecode{} {
     parse_all_files();
 }
@@ -21,24 +29,21 @@ int Interp::run() {
 
     for(i64 i = bytecode.entrypoint; i < bytecode.buffer.size(); ++i) {
         switch(bytecode.buffer[i]) {
-            case ir_add: {
-                auto arg2 = stack.back();
-                stack.pop_back();
-                auto arg1 = stack.back();
-                stack.back() = arg2 + arg1;
+            case ir_add:
+                BIN_OP(+);
                 break;
-            }
-            case ir_sub: {
-                auto arg1 = stack.back();
-                stack.pop_back();
-                auto arg2 = stack.back();
-                stack.back() = arg2 - arg1;
+            case ir_sub:
+                BIN_OP(-);
                 break;
-            }
             case ir_mul:
+                BIN_OP(*);
+                break;
             case ir_div:
+                BIN_OP(/);
+                break;
             case ir_mod:
-                assert(false);
+                BIN_OP(%);
+                break;
             case ir_push: {
                 u64 imm = 0;
                 for(int x = 0; x < 8; ++x)
@@ -48,9 +53,14 @@ int Interp::run() {
                 break;
             }
             case ir_pop:
+                stack.pop_back();
+                break;
             case ir_dup:
+                stack.push_back(stack.back());
+                break;
             case ir_swap:
-                assert(false);
+                std::iter_swap(stack.end() - 2, stack.end() - 1);
+                break;
             case ir_call: {
                 u64 imm = 0;
                 for(int x = 0; x < 8; ++x)

@@ -1,0 +1,7 @@
+##
+## return 20 
+##
+
+main :: () -> int
+    10 dup +
+    ret
