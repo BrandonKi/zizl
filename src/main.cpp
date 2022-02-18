@@ -11,7 +11,7 @@ Args parse_cmd_args(int argc, char* argv[]) {
             // support cmd line options in the future
         }
         else {
-            args.files.push_back(arg);
+            args.file = arg;
         }
     }
 

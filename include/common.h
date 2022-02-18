@@ -30,7 +30,7 @@ using u32 = uint32_t;
 using u64 = uint64_t;
 
 struct Args {
-    std::vector<std::string_view> files;
+    std::string_view file;
 };
 
 enum class TokenKind {
@@ -62,6 +62,8 @@ enum class TokenKind {
     call,
     ret,
 
+    include,
+
     end_of_file,
 };
 
@@ -79,6 +81,7 @@ inline std::unordered_map<std::string_view, TokenKind> keywords = {
     {"dup"sv, TokenKind::dup},
     {"pop"sv, TokenKind::pop},
     {"swap"sv, TokenKind::swap},
+    {"include"sv, TokenKind::include},
 };
 
 inline TokenKind get_keyword(Span span) {
@@ -98,7 +101,11 @@ inline TokenKind get_keyword(Span span) {
     return std::string(buffer.str());
 }
 
-inline bool is_alpha_numeric(char c) {
+inline bool is_alpha_numeric_or_underscore(char c) {
+    return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_';
+}
+
+inline bool is_alpha(char c) {
     return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
 
@@ -157,6 +164,10 @@ inline std::string_view tokenkind_to_string(TokenKind kind) {
             return "call"sv;
         case ret:
             return "ret"sv;
+
+        case include:
+            return "include"sv;
+
         case end_of_file:
             return "end_of_file"sv;
         default:

@@ -13,16 +13,18 @@ class Parser {
     bytecode_module parse();
 
   private:
-    Lexer lexer;
+    std::vector<Lexer> lexer_stack;
     Ir ir_builder;
 
     void parse_top_level();
+    void parse_include();
     void parse_function();
     void parse_function_header();
     std::vector<Type> parse_type_pack();
     void parse_expression();
 
     Type id_to_type(Span);
+    Lexer& lexer();
 };
 
 #endif // ZIZL_PARSER_H

@@ -151,7 +151,7 @@ Token Lexer::lex_token() {
 Token Lexer::lex_id() {
     char* span_start = index;
 
-    while(is_alpha_numeric(*index)) {++index;}
+    while(is_alpha_numeric_or_underscore(*index)) {++index;}
 
     Span span{span_start, index - 1};
 

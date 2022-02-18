@@ -14,7 +14,7 @@ class Interp {
     Args args;
     bytecode_module bytecode;
 
-    void parse_all_files();
+    void parse_file();
 
 };
 

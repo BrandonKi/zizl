@@ -1,0 +1,9 @@
+##
+## return 110
+##
+
+include add_module
+
+main :: () -> int
+    10 100 add
+    ret

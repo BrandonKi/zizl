@@ -11,16 +11,12 @@
                       } while(0)
 
 Interp::Interp(Args args): args{args}, bytecode{} {
-    parse_all_files();
+    parse_file();
 }
 
-void Interp::parse_all_files() {
-    // FIXME is there any reason to parse multiple files independently?
-    // in theory they would all textually/syntactically depend on each other for this language
-    //for(auto file: args.files) {
-    Parser parser{args.files[0]};
+void Interp::parse_file() {
+    Parser parser{args.file};
     bytecode = parser.parse();
-    //}
 }
 
 int Interp::run() {

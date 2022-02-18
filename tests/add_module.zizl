@@ -1,0 +1,7 @@
+##
+## provides a definition
+## for the add function
+##
+
+add :: (int, int) -> int
+    + ret

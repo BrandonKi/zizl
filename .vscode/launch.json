@@ -6,9 +6,9 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["tests/test6.zizl"],
+            "args": ["test7.zizl"],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/tests",
             "environment": [],
             "console": "integratedTerminal"
         }
