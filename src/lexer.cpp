@@ -219,6 +219,13 @@ bool Lexer::check_token(TokenKind kind) {
     return false;
 }
 
+bool Lexer::check_next_token(TokenKind kind) {
+    if(kind == peek_token().kind) {
+        return true;
+    }
+    return false;
+}
+
 bool Lexer::expect_token(TokenKind kind) {
     if(check_token(kind)) {
         next_token();

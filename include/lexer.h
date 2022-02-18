@@ -12,6 +12,7 @@ class Lexer {
     Token next_token();
     Token current_token();
     bool check_token(TokenKind);
+    bool check_next_token(TokenKind);
     bool expect_token(TokenKind);
     bool verify_token(TokenKind);
 

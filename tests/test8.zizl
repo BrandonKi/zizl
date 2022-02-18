@@ -1,0 +1,10 @@
+##
+## return 2
+## tests auto ret insertion
+##
+
+test :: () -> int
+    2
+
+main :: () -> int
+    test

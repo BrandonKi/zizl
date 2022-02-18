@@ -6,6 +6,7 @@ Parser::Parser(std::string_view filename): lexer_stack{}, ir_builder{} {
 
 bytecode_module Parser::parse() {
     parse_top_level();
+    ir_builder.pretty_print_buffer();
     return ir_builder.get_bytecode();
 }
 
@@ -27,7 +28,6 @@ void Parser::parse_include() {
     std::string id = std::string(lexer().current_token().span) + ".zizl";
     lexer().next_token();
     lexer_stack.push_back(read_file(id));
-    //lexer().next_token();
 }
 
 // HEADER:
@@ -37,7 +37,6 @@ void Parser::parse_include() {
 void Parser::parse_function() {
     parse_function_header();
     parse_expression();
-    ir_builder.pretty_print_buffer();
 }
 
 // id :: type_pack -> type_pack
@@ -103,7 +102,13 @@ void Parser::parse_expression() {
             case string_literal:
                 assert(false);
             case id:
-                // TODO uuuhhh...
+                // if the id is part of the next function definition
+                // then insert a ret and move on
+                if(lexer().check_next_token(TokenKind::double_colon)) {
+                    ir_builder.build_ret();
+                    return;
+                }
+                // TODO speed
                 ir_builder.build_fn_call(std::string(span));
                 break;
             case add:
@@ -148,7 +153,8 @@ void Parser::parse_expression() {
                 lexer().next_token();
                 return;
             case end_of_file:
-                break;
+                ir_builder.build_ret();
+                return;
             default:
                 assert(false);
         }
