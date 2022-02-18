@@ -1,0 +1,31 @@
+##
+## return 9
+## type pack parsing test
+##
+
+inc :: int -> int
+    1 +
+
+add :: (int, int) -> int
+    +
+
+mul :: int, int -> int
+    *
+
+div :: (int, int) -> (int)
+    /
+
+push_1 :: () -> int
+    1
+
+reverse_2 :: int, int -> int, int
+    swap
+
+swap_swap :: (int, int, int) -> (int, int, int)
+    swap swap
+
+noop :: () -> ()
+    ret
+
+main :: () -> (int)
+    9 noop
