@@ -16,3 +16,10 @@ main :: () -> int
     puts
 
 ```
+
+### TODO list
+- [ ] strings
+- [ ] floats
+- [ ] user defined types
+- [ ] FFI
+- [ ] std lib
