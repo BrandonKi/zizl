@@ -1,0 +1,26 @@
+##
+## prints "10 hello 10 world"
+##
+
+include std.string
+include std.utility
+include std.io
+
+sum :: (int, int)* -> int
+    + ..
+
+stringify :: (int, std.string)* -> std.string
+    std.int_to_string
+    std.string_append
+    ...
+
+main :: () -> int
+    "world"
+    1 2 3 4
+    sum
+    "hello"
+    10
+    stringify
+    std.join
+    " " std.seperate
+    std.puts
