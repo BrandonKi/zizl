@@ -2,6 +2,18 @@
 
 using enum ir_instruction;
 
+extern std::vector<native_function> registered_native_function_table;
+
+void Ir::import_native_functions() {
+    init_native_functions();
+    // FIXME I have a feeling this will break something eventually
+    native_function_table = std::move(registered_native_function_table);
+}
+
+Ir::Ir(): function_table{}, native_function_table{}, bytecode{} {
+    import_native_functions();
+}
+
 void Ir::build_fn_def(std::string id, std::vector<Type> itypes, std::vector<Type> otypes) {
     auto address = bytecode.buffer.size();
     ir_function fn{id, itypes, otypes, address};
@@ -54,11 +66,20 @@ void Ir::build_fn_call(std::string id) {
 
     // TODO optimize (hash table maybe??)
 
+    // find id in native_function_table
+    for(auto& fn: native_function_table) {
+        if(fn.id == id) {
+            bytecode.buffer.push_back(native_call);;
+            //bytecode.buffer.push_back(0x69);;
+            push_imm((uintptr_t)(void*)fn.fn_ptr);    // .... :(
+            //bytecode.buffer.push_back(0x69);;
+            return;
+        }
+    }
+
     // find id in function_table
-    u64 index = 0;
     for(auto& fn: function_table) {
         if(fn.id == id) {
-            // emit a call with index from function_table
             bytecode.buffer.push_back(ir_call);
             push_imm(fn.buffer_location);
             return;
@@ -76,6 +97,9 @@ bytecode_module Ir::get_bytecode() {
 }
 
 void Ir::pretty_print_buffer() {
+    for(auto x: bytecode.buffer)
+        std::cout << std::hex << " " << (int)x << " ";
+    std::cout << std::dec << "\n";
     for(int i = 0; i < bytecode.buffer.size(); ++i) {
         switch(bytecode.buffer[i]) {
             case ir_add:
@@ -112,11 +136,21 @@ void Ir::pretty_print_buffer() {
             case ir_swap:
                 std::cout << "swap\n";
                 break;
+            case native_call: {
+                std::cout << "native_call\t";
+                u64 imm = 0;
+                for(int x = 0; x < 8; ++x) {
+                    imm |= u64(bytecode.buffer[i + x + 1]) << (x * 8);
+                }
+                std::cout << "pp " << (void*)imm << "\n";
+                i += 8;
+                break;
+            }
             case ir_call: {
                 std::cout << "call\t";
                 u64 imm = 0;
                 for(int x = 0; x < 8; ++x)
-                    imm |= bytecode.buffer[i + x + 1] << (x * 8);
+                    imm |= u64(bytecode.buffer[i + x + 1]) << (x * 8);
                 std::cout << imm << "\n";
                 i += 8;
                 break;

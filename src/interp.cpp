@@ -57,10 +57,20 @@ int Interp::run() {
             case ir_swap:
                 std::iter_swap(stack.end() - 2, stack.end() - 1);
                 break;
+            case native_call: {
+                u64 imm = 0;
+                for(int x = 0; x < 8; ++x)
+                    imm |= u64(bytecode.buffer[i + x + 1]) << (x * 8);
+                i += 8;
+                auto fn = (native_fn_ptr)(void*)(uintptr_t)imm;
+                auto result = fn(stack);
+                stack.push_back(result);
+                break;
+            }
             case ir_call: {
                 u64 imm = 0;
                 for(int x = 0; x < 8; ++x)
-                    imm |= bytecode.buffer[i + x + 1] << (x * 8);
+                    imm |= u64(bytecode.buffer[i + x + 1]) << (x * 8);
                 i += 8;
                 call_stack.push_back(i);
                 // TODO underflow?

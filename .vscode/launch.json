@@ -6,7 +6,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["test8.zizl"],
+            "args": ["test12.zizl"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/tests",
             "environment": [],

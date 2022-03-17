@@ -22,5 +22,6 @@ int main(int argc, char* argv[]) {
     auto args = parse_cmd_args(argc, argv);
 
     Interp interp{args};
-    std::cout << "Exited with code: " << interp.run() << "\n";
+    auto exit_code = interp.run();
+    std::cout << "Exited with code: " << exit_code << "\n";
 }

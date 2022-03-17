@@ -2,6 +2,8 @@
 #define ZIZL_IR_H
 #include "common.h"
 
+#include "native_functions.h"
+
 enum ir_instruction: u8 {
     ir_add,
     ir_sub,
@@ -17,6 +19,7 @@ enum ir_instruction: u8 {
     ir_if,      //
     ir_else,    // need to figure out how these will work
     ir_then,    // lowering control flow to raw jumps seems easiest
+    native_call,
     ir_call,
     ir_ret,
 };
@@ -35,7 +38,7 @@ struct bytecode_module {
 
 class Ir {
   public:
-    Ir(): function_table{}, bytecode{} {}
+    Ir();
 
     void build_fn_def(std::string, std::vector<Type>, std::vector<Type>);
 
@@ -57,8 +60,11 @@ class Ir {
     void pretty_print_buffer();
     void push_imm(u64);
 
+    void import_native_functions();
+
   private:
     std::vector<ir_function> function_table;
+    std::vector<native_function> native_function_table;
     bytecode_module bytecode;
 
 };

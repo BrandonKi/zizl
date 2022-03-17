@@ -1,0 +1,13 @@
+##
+## test native function calling
+##
+
+# native write_int :: int -> ()
+# native read_int  :: () -> int
+
+include std.io
+
+main :: () -> int
+    read_int
+    dup
+    write_int

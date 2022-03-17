@@ -14,6 +14,7 @@ set(SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ir.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/sema.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/interp.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/native_functions.cpp
 )
 
 add_executable(zizl ${SRC})

@@ -15,6 +15,7 @@
 #include <charconv>
 #include <unordered_map>
 #include <algorithm>
+#include <bit>
 #include <cstdint>
 #include <cassert>
 
@@ -82,6 +83,17 @@ inline std::unordered_map<std::string_view, TokenKind> keywords = {
     {"pop"sv, TokenKind::pop},
     {"swap"sv, TokenKind::swap},
     {"include"sv, TokenKind::include},
+};
+
+// TODO pass typed arguments to the function
+// right now we just ignore type
+using native_fn_ptr = u64 (*)(std::vector<u64>&);
+
+struct native_function {
+    std::string id;
+    std::vector<Type> input_types;
+    std::vector<Type> output_types;
+    native_fn_ptr fn_ptr;
 };
 
 inline TokenKind get_keyword(Span span) {
