@@ -16,6 +16,8 @@ class Lexer {
     bool expect_token(TokenKind);
     bool verify_token(TokenKind);
 
+    bool has_token();
+
   private:
     std::string filedata;
     char* index;

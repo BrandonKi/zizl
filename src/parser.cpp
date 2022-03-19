@@ -1,20 +1,27 @@
 #include "parser.h"
 
 Parser::Parser(std::string_view filename): lexer_stack{}, ir_builder{} {
-    lexer_stack.push_back(read_file(filename));
+    lexer_stack.push_back(find_and_read_file(filename));
 }
 
 bytecode_module Parser::parse() {
     parse_top_level();
-    ir_builder.pretty_print_buffer();
+    // ir_builder.pretty_print_buffer();
     return ir_builder.get_bytecode();
 }
 
 void Parser::parse_top_level() {
-    if(lexer().expect_token(TokenKind::include))
-        parse_include();
-    while(lexer().check_token(TokenKind::id))
-        parse_function();
+
+    while(lexer().has_token()) {
+        if(lexer().check_token(TokenKind::id))
+            parse_function();
+        else if(lexer().expect_token(TokenKind::include))
+            parse_include();
+        else if(lexer().check_token(TokenKind::native))
+            parse_native_function();
+        else
+            break;  // there are only comments left
+    }
 
     // if we are still parsing includes
     if(lexer_stack.size() != 1) {
@@ -23,11 +30,29 @@ void Parser::parse_top_level() {
     }
 }
 
+
 // include id
+// include id.id
 void Parser::parse_include() {
-    std::string id = std::string(lexer().current_token().span) + ".zizl";
+    std::string id;
+    while(lexer().check_token(TokenKind::id)) {
+        id += std::string_view(lexer().current_token().span);
+        lexer().next_token();
+        if(lexer().expect_token(TokenKind::dot))
+            id += '.';
+        else
+            break;
+    }
+    id += ".zizl";
+    // lexer().next_token();
+    lexer_stack.push_back(find_and_read_file(id));
+}
+
+// native function_header
+//        id :: type_pack -> type_pack
+void Parser::parse_native_function() {
     lexer().next_token();
-    lexer_stack.push_back(read_file(id));
+    parse_function_header();
 }
 
 // HEADER:
@@ -48,6 +73,7 @@ void Parser::parse_function_header() {
     auto itypes = parse_type_pack();
     lexer().verify_token(TokenKind::arrow);
     auto otypes = parse_type_pack();
+    symbol_table.insert(id);
     ir_builder.build_fn_def(id, std::move(itypes), std::move(otypes));
 }
 
@@ -101,7 +127,7 @@ void Parser::parse_expression() {
             case float_literal:
             case string_literal:
                 assert(false);
-            case id:
+            case id: {
                 // if the id is part of the next function definition
                 // then insert a ret and move on
                 if(lexer().check_next_token(TokenKind::double_colon)) {
@@ -109,8 +135,15 @@ void Parser::parse_expression() {
                     return;
                 }
                 // TODO speed
-                ir_builder.build_fn_call(std::string(span));
+                std::string id = std::string(span);
+                if(!symbol_table.contains(id)) {
+                    std::cout << "Error: undefined id '" << id << "'\n";
+                    std::exit(-1);
+                }
+                symbol_table.insert(id);
+                ir_builder.build_fn_call(id);
                 break;
+            }
             case add:
                 ir_builder.build_add();
                 break;
@@ -170,4 +203,17 @@ Type Parser::id_to_type(Span id) {
 
 Lexer& Parser::lexer() {
     return lexer_stack.back();
+}
+
+std::string Parser::find_and_read_file(std::string_view filepath) {
+    std::optional<std::string> result;
+    std::string std_lib_path = "C:/Users/Kirin/OneDrive/Desktop/zizl/std_lib/";
+    // found the file in the user directory
+    if(result = read_file(filepath))
+        return result.value();
+    else if(result = read_file(std_lib_path + std::string(filepath)))
+        return result.value();
+    else 
+        std::cout << "Error: could not find file " << filepath << "\n";
+    return {};
 }

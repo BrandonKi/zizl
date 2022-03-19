@@ -1,0 +1,9 @@
+##
+## std io library
+##
+
+# write an int to stdout
+native write_int :: int -> ()
+
+# read an int from stdin
+native read_int  :: () -> int

@@ -23,5 +23,5 @@ int main(int argc, char* argv[]) {
 
     Interp interp{args};
     auto exit_code = interp.run();
-    std::cout << "Exited with code: " << exit_code << "\n";
+    std::cout << "\nExited with code: " << exit_code << "\n";
 }

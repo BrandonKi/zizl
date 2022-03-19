@@ -12,8 +12,10 @@
 #include <utility>
 #include <memory>
 #include <string_view>
+#include <optional>
 #include <charconv>
 #include <unordered_map>
+#include <unordered_set>
 #include <algorithm>
 #include <bit>
 #include <cstdint>
@@ -59,10 +61,12 @@ enum class TokenKind {
     right_paren,
     arrow,
     comma,
+    dot,
 
     call,
     ret,
 
+    native,
     include,
 
     end_of_file,
@@ -82,6 +86,7 @@ inline std::unordered_map<std::string_view, TokenKind> keywords = {
     {"dup"sv, TokenKind::dup},
     {"pop"sv, TokenKind::pop},
     {"swap"sv, TokenKind::swap},
+    {"native"sv, TokenKind::native},
     {"include"sv, TokenKind::include},
 };
 
@@ -104,9 +109,11 @@ inline TokenKind get_keyword(Span span) {
     return search->second;
 }
 
-[[nodiscard]] inline std::string read_file(std::string_view filepath) {
+[[nodiscard]] inline std::optional<std::string> read_file(std::string_view filepath) {
     std::ifstream file;
     file.open(filepath);
+    if(!file)
+        return {};
     std::stringstream buffer;
     buffer << file.rdbuf();
     file.close();
@@ -172,6 +179,9 @@ inline std::string_view tokenkind_to_string(TokenKind kind) {
             return "arrow"sv;
         case comma:
             return "comma"sv;
+        case dot:
+            return "dot"sv;
+
         case call:
             return "call"sv;
         case ret:

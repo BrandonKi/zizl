@@ -40,7 +40,7 @@ Token Lexer::lex_token() {
             case '-':
                 return lex_dash();
             case '.':
-                assert(false);
+                return Token{Span{index, index++}, TokenKind::dot};
             case '/':
                 return Token{Span{index, index++}, TokenKind::div};
             case '0':
@@ -234,11 +234,14 @@ bool Lexer::expect_token(TokenKind kind) {
     return false;
 }
 
-
 bool Lexer::verify_token(TokenKind kind) {
     if(check_token(kind)) {
         next_token();
         return true;
     }
     assert(false);
+}
+
+bool Lexer::has_token() {
+    return index < filedata.data() + filedata.size();
 }

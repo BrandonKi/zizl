@@ -18,8 +18,8 @@ u64 write_int(std::vector<u64>& input) {
     return {};
 }
 
+// TODO this is just temporary
 void init_native_functions() {
     register_native_function(read_int);
     register_native_function(write_int);
-
 }
