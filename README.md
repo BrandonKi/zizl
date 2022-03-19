@@ -21,5 +21,5 @@ main :: () -> int
 - [ ] strings
 - [ ] floats
 - [ ] user defined types
-- [ ] FFI
+- [x] FFI
 - [ ] std lib
